@@ -1,0 +1,33 @@
+name: Build GitHub Pages
+
+on:
+  push:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build GitHub Pages
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v1
+        with:
+          ref: master
+
+      - name: Build
+        run: make deploy
+
+      - name: Deploy
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          git checkout --orphan gh-pages
+          git reset
+          git add .
+          git commit --message="Build GitHub Pages"
+          git push --force origin gh-pages
