@@ -1,5 +1,5 @@
 import * as THREE from "./three/three.module.js";
-import { OrbitControls } from "./three/OrbitControls.js";
+import { MapControls } from "./three/OrbitControls.js";
 
 let renderer;
 let scene;
@@ -22,7 +22,7 @@ if (hasWebGL) {
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	document.body.appendChild(renderer.domElement);
 
-	const controls = new OrbitControls(camera, renderer.domElement);
+	const controls = new MapControls(camera, renderer.domElement);
 
 	const axesHelper = new THREE.AxesHelper(10);
 	scene.add(axesHelper);
