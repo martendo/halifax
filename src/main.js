@@ -19,6 +19,7 @@ if (hasWebGL) {
 	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
 	renderer = new THREE.WebGLRenderer({antialias: true});
+	renderer.setPixelRatio(window.devicePixelRatio);
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	document.body.appendChild(renderer.domElement);
 
@@ -46,6 +47,7 @@ if (hasWebGL) {
 	camera.position.z = 5;
 	controls.update();
 
+	window.addEventListener("resize", updateViewportSize);
 	animate();
 } else {
 	const message = document.createElement("div");
@@ -59,4 +61,10 @@ function animate() {
 	cube.rotation.x += 0.01;
 	cube.rotation.y += 0.01;
 	renderer.render(scene, camera);
+}
+
+function updateViewportSize() {
+	camera.aspect = window.innerWidth / window.innerHeight;
+	camera.updateProjectionMatrix();
+	renderer.setSize(window.innerWidth, window.innerHeight);
 }
