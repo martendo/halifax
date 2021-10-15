@@ -1,2 +1,5 @@
 # Built test/development files
 /test/
+
+# Dependency files
+node_modules/

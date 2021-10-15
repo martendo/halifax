@@ -1,12 +1,20 @@
-import * as THREE from "https://cdn.skypack.dev/three@0.133.1";
-import { OrbitControls } from "https://cdn.skypack.dev/three@0.133.1/examples/jsm/controls/OrbitControls.js";
+import * as THREE from "./three/three.module.js";
+import { OrbitControls } from "./three/OrbitControls.js";
 
 let renderer;
 let scene;
 let camera;
 let cube;
 
-export function init() {
+// Show a warning message if WebGL is not available
+// Adapted from three.js's examples/jsm/WebGL.js
+let hasWebGL = false;
+try {
+	const canvas = document.createElement("canvas");
+	hasWebGL = !!(window.WebGLRenderingContext && (canvas.getContext("webgl") || canvas.getContext("experimental-webgl")));
+} catch {}
+
+if (hasWebGL) {
 	scene = new THREE.Scene();
 	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
@@ -39,6 +47,10 @@ export function init() {
 	controls.update();
 
 	animate();
+} else {
+	const message = document.createElement("div");
+	message.innerHTML = `<h1>WebGL Unavailable</h1>Your ${window.WebGLRenderingContext ? "graphics card" : "browser"} does not seem to support <a href="https://get.webgl.org/get-a-webgl-implementation/" target="_blank">WebGL</a>.`;
+	document.body.appendChild(message);
 }
 
 function animate() {

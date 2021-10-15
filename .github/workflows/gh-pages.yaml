@@ -14,9 +14,15 @@ jobs:
 
     steps:
       - name: Checkout master
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
         with:
           ref: master
+
+      - name: Set up node
+        uses: actions/setup-node@v2
+
+      - name: Install build dependencies
+        run: npm install --only=dev
 
       - name: Build
         run: make deploy

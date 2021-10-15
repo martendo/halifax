@@ -1,13 +1,14 @@
-SRCS = $(wildcard src/*)
+SRCS = $(wildcard src/*) $(wildcard src/*/*)
 
 test: $(SRCS)
 	@mkdir -p test
-	cp $(SRCS) test
+	cp src/index.html test
+	npx rollup -f iife -o test/script.js src/main.js
 
 deploy: $(SRCS)
-	cp $(SRCS) .
-	rm -rf $(filter-out LICENSE,$(wildcard *))
+	cp src/index.html .
+	npx rollup -f iife -o script.js src/main.js
+	rm -rf $(filter-out index.html script.js LICENSE,$(wildcard *))
 
 clean:
 	rm -rf test
-	rm -f $(patsubst src/%,%,$(SRCS))
