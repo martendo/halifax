@@ -8,7 +8,7 @@ test: $(SRCS)
 deploy: $(SRCS)
 	cp src/index.html .
 	npx rollup -f iife -o script.js src/main.js
-	rm -rf $(filter-out index.html script.js LICENSE,$(wildcard *))
+	rm -rf $(filter-out . .. .git index.html script.js LICENSE,$(wildcard *) $(wildcard .*))
 
 clean:
 	rm -rf test
