@@ -1,16 +1,32 @@
-SRCS = $(wildcard src/*) $(wildcard src/*/*)
+SRCS_JS = $(wildcard src/*.js) $(wildcard src/*/*.js)
 
-test: $(SRCS)
-	@mkdir -p test
-	cp src/index.html src/favicon.png test
-	npx rollup -f iife -o test/script.js src/main.js
-	npx terser test/script.js --compress --mangle -o test/script.js
+dist: dist/index.html dist/favicon.png dist/script.js
+.PHONY: dist
 
-deploy: $(SRCS)
-	cp src/index.html src/favicon.png .
-	npx rollup -f iife -o script.js src/main.js
-	npx terser script.js --compress --mangle -o script.js
-	rm -rf $(filter-out . .. .git index.html script.js LICENSE,$(wildcard *) $(wildcard .*))
+distmin: dist/index.html dist/favicon.png dist/script.min.js
+	mv dist/script.min.js dist/script.js
+.PHONY: distmin
 
 clean:
-	rm -rf test
+	rm -rf dist
+.PHONY: clean
+
+deploy: distmin
+	mv dist/* .
+	rm -rf $(filter-out . .. .git index.html script.js LICENSE,$(wildcard *) $(wildcard .*))
+.PHONY: deploy
+
+dist/script.js: $(SRCS_JS)
+	@mkdir -p $(@D)
+	npx rollup -f iife -o $@ src/main.js
+
+dist/script.min.js: dist/script.js
+	npx terser $< --compress --mangle -o $@
+
+dist/index.html: src/index.html
+	@mkdir -p $(@D)
+	cp $< $(@D)
+
+dist/favicon.png: src/favicon.png
+	@mkdir -p $(@D)
+	cp $< $(@D)
