@@ -30,8 +30,18 @@ if (hasWebGL) {
 	const gridHelper = new THREE.GridHelper(10);
 	scene.add(gridHelper);
 
+	const hemiLight = new THREE.HemisphereLight(0xfffff0, 0x006080, 1.5);
+	scene.add(hemiLight);
+	const hemiLightHelper = new THREE.HemisphereLightHelper(hemiLight, 5);
+	scene.add(hemiLightHelper);
+	const dirLight = new THREE.DirectionalLight(0xffff0e0, 0.5);
+	dirLight.position.set(0, 30, 30);
+	scene.add(dirLight);
+	const dirLightHelper = new THREE.DirectionalLightHelper(dirLight, 5);
+	scene.add(dirLightHelper);
+
 	const geometry = new THREE.BoxGeometry();
-	const material = new THREE.MeshBasicMaterial({
+	const material = new THREE.MeshPhongMaterial({
 		color: 0xff0000,
 		polygonOffset: true,
 		polygonOffsetFactor: 1,
