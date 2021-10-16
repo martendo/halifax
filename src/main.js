@@ -1,10 +1,6 @@
 import * as THREE from "./three/three.module.js";
 import { MapControls } from "./three/OrbitControls.js";
-
-let renderer;
-let scene;
-let camera;
-let cube;
+import global from "./global.js";
 
 // Show a warning message if WebGL is not available
 // Adapted from three.js's examples/jsm/WebGL.js
@@ -15,15 +11,17 @@ try {
 } catch {}
 
 if (hasWebGL) {
-	scene = new THREE.Scene();
-	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+	const scene = new THREE.Scene();
+	global.scene = scene;
+	const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+	global.camera = camera;
 
-	renderer = new THREE.WebGLRenderer({antialias: true});
-	renderer.setPixelRatio(window.devicePixelRatio);
-	renderer.setSize(window.innerWidth, window.innerHeight);
-	document.body.appendChild(renderer.domElement);
+	global.renderer = new THREE.WebGLRenderer({antialias: true});
+	global.renderer.setPixelRatio(window.devicePixelRatio);
+	global.renderer.setSize(window.innerWidth, window.innerHeight);
+	document.body.appendChild(global.renderer.domElement);
 
-	const controls = new MapControls(camera, renderer.domElement);
+	const controls = new MapControls(camera, global.renderer.domElement);
 
 	const axesHelper = new THREE.AxesHelper(10);
 	scene.add(axesHelper);
@@ -47,7 +45,7 @@ if (hasWebGL) {
 		polygonOffsetFactor: 1,
 		polygonOffsetUnits: 1,
 	});
-	cube = new THREE.Mesh(geometry, material);
+	const cube = new THREE.Mesh(geometry, material);
 	scene.add(cube);
 	const edges = new THREE.EdgesGeometry(geometry);
 	const line = new THREE.LineSegments(edges);
@@ -58,23 +56,23 @@ if (hasWebGL) {
 	controls.update();
 
 	window.addEventListener("resize", updateViewportSize);
-	animate();
+
+	global.render = function() {
+		requestAnimationFrame(global.render);
+
+		cube.rotation.x += 0.01;
+		cube.rotation.y += 0.01;
+		global.renderer.render(scene, camera);
+	}
+	global.render();
 } else {
 	const message = document.createElement("div");
 	message.innerHTML = `<h1>WebGL Unavailable</h1>Your ${window.WebGLRenderingContext ? "graphics card" : "browser"} does not seem to support <a href="https://get.webgl.org/get-a-webgl-implementation/" target="_blank">WebGL</a>.`;
 	document.body.appendChild(message);
 }
 
-function animate() {
-	requestAnimationFrame(animate);
-
-	cube.rotation.x += 0.01;
-	cube.rotation.y += 0.01;
-	renderer.render(scene, camera);
-}
-
 function updateViewportSize() {
-	camera.aspect = window.innerWidth / window.innerHeight;
-	camera.updateProjectionMatrix();
-	renderer.setSize(window.innerWidth, window.innerHeight);
+	global.camera.aspect = window.innerWidth / window.innerHeight;
+	global.camera.updateProjectionMatrix();
+	global.renderer.setSize(window.innerWidth, window.innerHeight);
 }
