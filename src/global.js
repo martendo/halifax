@@ -3,6 +3,7 @@ const global = {
     renderer: null,
     scene: null,
     camera: null,
+    lerps: [],
 };
 
 export default global;
