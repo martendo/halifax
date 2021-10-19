@@ -18,7 +18,7 @@ deploy: distmin
 
 dist/script.js: $(SRCS_JS)
 	@mkdir -p $(@D)
-	npx rollup -f iife -o $@ src/main.js
+	npx rollup -f iife -o $@ src/script.js
 
 dist/script.min.js: dist/script.js
 	npx terser $< --compress --mangle -o $@

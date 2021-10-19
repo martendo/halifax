@@ -1,9 +1,4 @@
 import * as THREE from "./three/three.module.js";
-import { MapControls } from "./three/OrbitControls.js";
-import global from "./global.js";
-import { initDie } from "./die.js";
-
-const LERP_DONE_DISTANCE = 0.001;
 
 // Show a warning message if WebGL is not available
 // Adapted from three.js's examples/jsm/WebGL.js
@@ -14,82 +9,63 @@ try {
 } catch {}
 
 if (hasWebGL) {
+	const LERP_DONE_DISTANCE = 0.001;
+	const SELECT_LERP = [new THREE.Vector3(1.4, 1.4, 1.4), 0.15];
+	const DESELECT_LERP = [new THREE.Vector3(1, 1, 1), 0.15];
+
+	let lerps = [];
+
 	const scene = new THREE.Scene();
-	global.scene = scene;
 	const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-	camera.layers.enableAll();
-	global.camera = camera;
 
-	global.renderer = new THREE.WebGLRenderer({antialias: true});
-	global.renderer.setPixelRatio(window.devicePixelRatio);
-	global.renderer.setSize(window.innerWidth, window.innerHeight);
-	document.body.appendChild(global.renderer.domElement);
+	const renderer = new THREE.WebGLRenderer({antialias: true});
+	renderer.setPixelRatio(window.devicePixelRatio);
+	renderer.setSize(window.innerWidth, window.innerHeight);
+	document.body.appendChild(renderer.domElement);
 
-	const controls = new MapControls(camera, global.renderer.domElement);
-
-	const axesHelper = new THREE.AxesHelper(10);
-	axesHelper.layers.set(1);
-	scene.add(axesHelper);
-	const gridHelper = new THREE.GridHelper(10);
-	gridHelper.layers.set(1);
-	scene.add(gridHelper);
-
-	const hemiLight = new THREE.HemisphereLight(0xfffff0, 0x006080, 1.5);
+	const hemiLight = new THREE.HemisphereLight(0xfffff0, 0x606060, 0.5);
 	scene.add(hemiLight);
-	const hemiLightHelper = new THREE.HemisphereLightHelper(hemiLight, 5);
-	hemiLightHelper.layers.set(1);
-	scene.add(hemiLightHelper);
 	const dirLight = new THREE.DirectionalLight(0xffff0e0, 0.5);
-	dirLight.position.set(0, 30, 30);
+	dirLight.position.set(1, 1, 2);
 	scene.add(dirLight);
-	const dirLightHelper = new THREE.DirectionalLightHelper(dirLight, 5);
-	dirLightHelper.layers.set(1);
-	scene.add(dirLightHelper);
 
-	const geometry = new THREE.BoxGeometry();
-	const material = new THREE.MeshPhongMaterial({
+	const geometry = new THREE.IcosahedronGeometry();
+	const material = new THREE.MeshLambertMaterial({
 		color: 0xff0000,
 		polygonOffset: true,
 		polygonOffsetFactor: 1,
 		polygonOffsetUnits: 1,
 	});
-	const cube = new THREE.Mesh(geometry, material);
-	cube.clickFunc = function() {
-		initDie();
-	};
-	scene.add(cube);
+	const die = new THREE.Mesh(geometry, material);
+	scene.add(die);
 	const edges = new THREE.EdgesGeometry(geometry);
 	const line = new THREE.LineSegments(edges);
-	line.material.color.setHex(0xffffff);
-	cube.add(line);
+	line.material.color.setHex(0x000000);
+	die.add(line);
 
-	camera.position.z = 5;
-	controls.update();
+	camera.position.z = 3;
 
 	window.addEventListener("resize", updateViewportSize);
 
 	const raycaster = new THREE.Raycaster();
-	raycaster.layers.set(0);
-	const pointer = new THREE.Vector2();
+	const pointer = new THREE.Vector2(10, 10);
 	window.addEventListener("mousemove", function(event) {
 		// Convert coordinates to [-1.0, 1.0]
 		pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
 		pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
 	});
 	let intObj = null;
-	const SELECT_LERP = [new THREE.Vector3(1.5, 1.5, 1.5), 0.15];
-	const DESELECT_LERP = [new THREE.Vector3(1, 1, 1), 0.15];
 	window.addEventListener("click", function(event) {
 		if (intObj && intObj.clickFunc) {
 			intObj.clickFunc();
 		}
 	});
 
-	global.render = function() {
-		requestAnimationFrame(global.render);
+	let render = function() {
+		requestAnimationFrame(render);
 
-		cube.rotation.x += 0.01;
-		cube.rotation.y += 0.01;
+		die.rotation.x += 0.005;
+		die.rotation.y += 0.005;
 
 		raycaster.setFromCamera(pointer, camera);
 		const intersects = raycaster.intersectObjects(scene.children, false);
@@ -107,14 +83,14 @@ if (hasWebGL) {
 					intObj.prevColor = intObj.material.color.getHex();
 					intObj.material.color.setHex(0xff4020);
 					// Lerp scale
-					global.lerps = global.lerps.filter((lerp) => lerp.uuid !== intObj.uuid);
+					lerps = lerps.filter((lerp) => lerp.uuid !== intObj.uuid);
 					const lerp = {
 						vector: intObj.scale,
 						args: SELECT_LERP,
 						uuid: intObj.uuid,
 					};
 					intObj.lerp = lerp;
-					global.lerps.push(lerp);
+					lerps.push(lerp);
 				}
 			}
 		} else {
@@ -122,14 +98,14 @@ if (hasWebGL) {
 				// Restore intersect object's colour
 				intObj.material.color.setHex(intObj.prevColor);
 				// Lerp scale
-				global.lerps = global.lerps.filter((lerp) => lerp.uuid !== intObj.uuid);
+				lerps = lerps.filter((lerp) => lerp.uuid !== intObj.uuid);
 				const lerp = {
 					vector: intObj.scale,
 					args: DESELECT_LERP,
 					uuid: intObj.uuid,
 				};
 				intObj.lerp = lerp;
-				global.lerps.push(lerp);
+				lerps.push(lerp);
 			}
 			// Not intersecting any objects
 			intObj = null;
@@ -137,29 +113,29 @@ if (hasWebGL) {
 
 		updateLerps();
 
-		global.renderer.render(scene, camera);
+		renderer.render(scene, camera);
 	};
-	global.render();
+	render();
+
+	function updateViewportSize() {
+		camera.aspect = window.innerWidth / window.innerHeight;
+		camera.updateProjectionMatrix();
+		renderer.setSize(window.innerWidth, window.innerHeight);
+	}
+
+	function updateLerps() {
+		for (let i = lerps.length - 1; i >= 0; i--) {
+			const lerp = lerps[i];
+			lerp.vector.lerp(...lerp.args);
+			if (lerp.vector.distanceTo(lerp.args[0]) < LERP_DONE_DISTANCE) {
+				// Lerp is pretty much finished -> remove it
+				lerps.splice(i, 1);
+				lerp.vector.copy(lerp.args[0]);
+			}
+		}
+	}
 } else {
 	const message = document.createElement("div");
 	message.innerHTML = `<h1>WebGL Unavailable</h1>Your ${window.WebGLRenderingContext ? "graphics card" : "browser"} does not seem to support <a href="https://get.webgl.org/get-a-webgl-implementation/" target="_blank">WebGL</a>.`;
 	document.body.appendChild(message);
-}
-
-function updateViewportSize() {
-	global.camera.aspect = window.innerWidth / window.innerHeight;
-	global.camera.updateProjectionMatrix();
-	global.renderer.setSize(window.innerWidth, window.innerHeight);
-}
-
-function updateLerps() {
-	for (let i = global.lerps.length - 1; i >= 0; i--) {
-		const lerp = global.lerps[i];
-		lerp.vector.lerp(...lerp.args);
-		if (lerp.vector.distanceTo(lerp.args[0]) < LERP_DONE_DISTANCE) {
-			// Lerp is pretty much finished -> remove it
-			global.lerps.splice(i, 1);
-			lerp.vector.copy(lerp.args[0]);
-		}
-	}
 }
