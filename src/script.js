@@ -32,35 +32,44 @@ if (hasWebGL) {
 	});
 	const die = new THREE.Mesh(geometry, material);
 	die.enterFunc = function() {
-		lerps = lerps.filter((lerp) => lerp.uuid !== die.uuid && lerp.uuid !== dirLight.uuid);
+		lerps = lerps.filter((lerp) => lerp.vector !== die.scale && lerp.vector !== dirLight);
 		// Brighten spotlight and enlarge die
 		lerps.push({
 			vector: dirLight,
 			prop: "intensity",
 			target: 0.8,
 			alpha: 0.25,
-			uuid: dirLight.uuid,
 		}, {
 			vector: die.scale,
 			target: SELECT_SCALE,
 			alpha: 0.15,
-			uuid: die.uuid,
 		});
 	};
 	die.leaveFunc = function() {
-		lerps = lerps.filter((lerp) => lerp.uuid !== die.uuid && lerp.uuid !== dirLight.uuid);
+		lerps = lerps.filter((lerp) => lerp.vector !== die.scale && lerp.vector !== dirLight);
 		// Dim spotlight and shrink die
 		lerps.push({
 			vector: dirLight,
 			prop: "intensity",
 			target: 0.5,
 			alpha: 0.25,
-			uuid: dirLight.uuid,
 		}, {
 			vector: die.scale,
 			target: DESELECT_SCALE,
 			alpha: 0.15,
-			uuid: die.uuid,
+		});
+	};
+	die.rotation.speed = 0.005;
+	die.clickFunc = function() {
+		// Spin
+		die.rotation.speed = Math.random() * (0.5 - 0.25) + 0.25;
+		lerps = lerps.filter((lerp) => lerp.vector !== die.rotation.speed);
+		// Slow the spin over time
+		lerps.push({
+			vector: die.rotation,
+			prop: "speed",
+			target: 0,
+			alpha: 0.05,
 		});
 	};
 	scene.add(die);
@@ -86,7 +95,7 @@ if (hasWebGL) {
 		pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
 	});
 	let intObj = null;
-	window.addEventListener("click", function(event) {
+	renderer.domElement.addEventListener("click", function(event) {
 		if (intObj && intObj.clickFunc) {
 			intObj.clickFunc();
 		}
@@ -95,8 +104,8 @@ if (hasWebGL) {
 	let render = function() {
 		requestAnimationFrame(render);
 
-		die.rotation.x += 0.005;
-		die.rotation.y += 0.005;
+		die.rotation.x += die.rotation.speed;
+		die.rotation.y += die.rotation.speed;
 
 		raycaster.setFromCamera(pointer, camera);
 		const intersects = raycaster.intersectObjects(scene.children, false);
