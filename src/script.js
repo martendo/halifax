@@ -12,6 +12,7 @@ if (hasWebGL) {
 	const LERP_DONE_DISTANCE = 0.0001;
 	const SELECT_SCALE = new THREE.Vector3(1.4, 1.4, 1.4);
 	const DESELECT_SCALE = new THREE.Vector3(1, 1, 1);
+	const LIGHT_FIRE_COLOR = new THREE.Color(0xff0000);
 
 	let lerps = [];
 
@@ -47,7 +48,7 @@ if (hasWebGL) {
 	};
 	die.leaveFunc = function() {
 		lerps = lerps.filter((lerp) => lerp.vector !== die.scale && lerp.vector !== dirLight);
-		// Dim spotlight and shrink die
+		// Dim light and shrink die
 		lerps.push({
 			vector: dirLight,
 			prop: "intensity",
@@ -64,12 +65,16 @@ if (hasWebGL) {
 		// Spin
 		die.rotation.speed = Math.random() * (0.5 - 0.25) + 0.25;
 		lerps = lerps.filter((lerp) => lerp.vector !== die.rotation.speed);
-		// Slow the spin over time
+		// Slow the spin and turn the light reddish over time
 		lerps.push({
 			vector: die.rotation,
 			prop: "speed",
 			target: 0,
 			alpha: 0.05,
+		}, {
+			vector: dirLight.color,
+			target: LIGHT_FIRE_COLOR,
+			alpha: 0.01,
 		});
 	};
 	scene.add(die);
@@ -162,7 +167,13 @@ if (hasWebGL) {
 				}
 			} else {
 				vector.lerp(lerp.target, lerp.alpha);
-				if (vector.distanceTo(lerp.target) < LERP_DONE_DISTANCE) {
+				let distance;
+				if (vector instanceof THREE.Color) {
+					distance = lerp.target.getHex() == vector.getHex() ? 0 : 1;
+				} else {
+					distance = vector.distanceTo(lerp.target)
+				}
+				if (distance < LERP_DONE_DISTANCE) {
 					// Lerp is pretty much finished -> remove it
 					lerps.splice(i, 1);
 					vector.copy(lerp.target);
