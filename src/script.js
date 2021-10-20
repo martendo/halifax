@@ -9,10 +9,12 @@ try {
 } catch {}
 
 if (hasWebGL) {
-	const LERP_DONE_DISTANCE = 0.0001;
+	const LERP_DONE_DISTANCE = 0.0005;
 	const SELECT_SCALE = new THREE.Vector3(1.4, 1.4, 1.4);
 	const DESELECT_SCALE = new THREE.Vector3(1, 1, 1);
 	const LIGHT_FIRE_COLOR = new THREE.Color(0xff0000);
+	const ORIGIN_POINT = new THREE.Vector2(0, 0);
+	const CAMERA_UNIT_POS = new THREE.Vector3(0, 0, 3).normalize();
 
 	let lerps = [];
 
@@ -61,8 +63,10 @@ if (hasWebGL) {
 		});
 	};
 	die.rotation.speed = 0.005;
+	die.doneSpin = false;
 	die.clickFunc = function() {
 		// Spin
+		die.doneSpin = false;
 		die.rotation.speed = Math.random() * (0.5 - 0.25) + 0.25;
 		lerps = lerps.filter((lerp) => lerp.vector !== die.rotation.speed);
 		// Slow the spin and turn the light reddish over time
@@ -108,6 +112,22 @@ if (hasWebGL) {
 
 	let render = function() {
 		requestAnimationFrame(render);
+
+		if (!die.doneSpin && die.rotation.speed === 0) {
+			die.doneSpin = true;
+			raycaster.setFromCamera(ORIGIN_POINT, camera);
+			const intersects = raycaster.intersectObject(die, false);
+			if (intersects.length) {
+				const intersect = intersects[0];
+				lerps.push({
+					vector: intersect.object.quaternion,
+					target: intersect.object.quaternion.clone().setFromUnitVectors(intersect.face.normal, CAMERA_UNIT_POS),
+					alpha: 0.05,
+				});
+			} else {
+				console.error("No face of die facing origin!");
+			}
+		}
 
 		die.rotation.x += die.rotation.speed;
 		die.rotation.y += die.rotation.speed;
@@ -166,10 +186,16 @@ if (hasWebGL) {
 					lerp.vector = vector;
 				}
 			} else {
-				vector.lerp(lerp.target, lerp.alpha);
+				if (vector instanceof THREE.Quaternion) {
+					vector.slerp(lerp.target, lerp.alpha);
+				} else {
+					vector.lerp(lerp.target, lerp.alpha);
+				}
 				let distance;
 				if (vector instanceof THREE.Color) {
 					distance = lerp.target.getHex() == vector.getHex() ? 0 : 1;
+				} else if (vector instanceof THREE.Quaternion) {
+					distance = (Math.abs(lerp.target.x - vector.x) + Math.abs(lerp.target.y - vector.y) + Math.abs(lerp.target.z - vector.z) + Math.abs(lerp.target.w - vector.w)) / 4;
 				} else {
 					distance = vector.distanceTo(lerp.target)
 				}
