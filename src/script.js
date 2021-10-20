@@ -129,7 +129,7 @@ if (hasWebGL) {
 				lerps.push({
 					vector: intersect.object.quaternion,
 					target: intersect.object.targetQuaternion,
-					alpha: 0.05,
+					alpha: 0.1,
 				});
 			} else {
 				console.error("No face of die facing origin!");
