@@ -5,15 +5,120 @@
 		<meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
 		<meta name="viewport" content="width=device-width,height=device-height,user-scalable=no,minimum-scale=1.0,maximum-scale=1.0">
 		<title>Halifax Explosion Die</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;900&display=swap" rel="stylesheet">
 		<style>
+			* {
+				box-sizing: border-box;
+			}
 			html, body {
 				margin: 0;
 				padding: 0;
+				width: 100%;
+				height: 100%;
+				background-color: #000000;
+				font-family: "Roboto", sans-serif;
+				font-size: calc((3vw + 3vh) / 2);
+				color: #ffffff;
+				line-height: 1.5;
+				overflow: hidden;
+			}
+			#header {
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				text-align: center;
+			}
+			h1 {
+				font-size: 0.75em;
+				font-weight: 300;
+				margin-bottom: 0;
+			}
+			h2 {
+				font-size: 0.4em;
+				font-weight: 300;
+				margin: 0;
+			}
+			.outcome {
+				position: absolute;
+				top: 0;
+				left: 0;
+				display: none;
+				padding: 1.5em;
+				width: max(30%, 13em);
+				height: 100%;
+				overflow: auto;
+			}
+			.outcome.show {
+				display: initial;
+			}
+			#container {
+				width: 100%;
+				height: 100%;
 			}
 		</style>
 		<link rel="icon" type="image/png" href="favicon.png" sizes="32x32">
 	</head>
 	<body>
+		<div id="header">
+			<h1>The Halifax Explosion Die of Consequence</h1>
+			<h2>By Martin Baldwin</h2>
+		</div>
+		<div class="outcome" id="outcome0">
+			<p><b>DEAD</b></p>
+			<hr>
+			<p>You are buried under the rubble of collapsed buildings, not to be found until it’s too late.</p>
+		</div>
+		<div class="outcome" id="outcome1">
+			<p><b>DEAD</b></p>
+			<hr>
+			<p>Standing outside, curious of the cause of the commotion at the harbour, you are killed by the blast instantaneously.</p>
+		</div>
+		<div class="outcome" id="outcome2">
+			<p><b>DEAD</b></p>
+			<hr>
+			<p>You survive the blast, but are severely injured by rubble from your now-levelled house that had collapsed on you.</p>
+			<p>You manage to find shelter and medical treatment; however, within a few days, your condition worsens and kills you.</p>
+		</div>
+		<div class="outcome" id="outcome3">
+			<p><b>INJURED</b></p>
+			<hr>
+			<p>You survive, but are blinded by flying shards of glass from your house’s broken windows.</p>
+			<p>You have your eyes removed and replaced with glass eyes, like many other Haligonians.</p>
+		</div>
+		<div class="outcome" id="outcome4">
+			<p><b>INJURED</b></p>
+			<hr>
+			<p>The blast threw you a great distance away into a place you don’t recognize, along with a severe concussion and pieces of debris in your arm.</p>
+		</div>
+		<div class="outcome" id="outcome5">
+			<p><b>ALRIGHT</b></p>
+			<hr>
+			<p>You’re one of the lucky ones, untouched while off at work.</p>
+			<p>However, your house has been swept away by the tsunami that ensued, and you are now homeless.</p>
+		</div>
+		<div class="outcome" id="outcome6">
+			<p><b>ALRIGHT</b></p>
+			<hr>
+			<p>On your way to school, you end up safe from the explosion.</p>
+			<p>However, the rest of your family at home has been killed and you alone are left behind. Your mother, father, grandmother, two brothers, and sister did not survive.</p>
+		</div>
+		<div class="outcome" id="outcome7">
+			<p><b>ALRIGHT</b></p>
+			<hr>
+			<p>On a train arriving from New Brunswick, you are saved by the incredible sacrifice of Vince Coleman.</p>
+			<p>Coleman was killed by the explosion, staying behind at his post to warn incoming trains of the danger.</p>
+			<p>Having received the warning, your train was stopped and you are left unharmed.</p>
+		</div>
+		<div class="outcome" id="outcome8">
+			<p><b>ALRIGHT</b></p>
+			<hr>
+			<p>Miraculously, you survive the collapse of your house without significant injury.</p>
+			<p>Unfortunately, however, your house caught fire and was burned to the ground. You must now seek shelter.</p>
+		</div>
+		<div id="container"></div>
 		<script type="text/javascript" src="script.js"></script>
 	</body>
 </html>

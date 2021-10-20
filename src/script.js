@@ -16,15 +16,18 @@ if (hasWebGL) {
 	const ORIGIN_POINT = new THREE.Vector2(0, 0);
 	const CAMERA_UNIT_POS = new THREE.Vector3(0, 0, 3).normalize();
 
+	const container = document.getElementById("container");
+	let contrect = container.getBoundingClientRect();
+
 	let lerps = [];
 
 	const scene = new THREE.Scene();
-	const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+	const camera = new THREE.PerspectiveCamera(75, contrect.width / contrect.height, 0.1, 1000);
 
 	const renderer = new THREE.WebGLRenderer({antialias: true});
 	renderer.setPixelRatio(window.devicePixelRatio);
-	renderer.setSize(window.innerWidth, window.innerHeight);
-	document.body.appendChild(renderer.domElement);
+	renderer.setSize(contrect.width, contrect.height);
+	container.appendChild(renderer.domElement);
 
 	const geometry = new THREE.IcosahedronGeometry();
 	const material = new THREE.MeshLambertMaterial({
@@ -64,11 +67,13 @@ if (hasWebGL) {
 	};
 	die.rotation.speed = 0.005;
 	die.doneSpin = false;
+	die.doneAlign = false;
 	die.clickFunc = function() {
 		// Spin
 		die.doneSpin = false;
+		die.doneAlign = false;
 		die.rotation.speed = Math.random() * (0.5 - 0.25) + 0.25;
-		lerps = lerps.filter((lerp) => lerp.vector !== die.rotation.speed);
+		lerps = lerps.filter((lerp) => lerp.vector !== die.rotation.speed && lerp.vector !== dirLight.color && lerp.vector !== die.quaternion);
 		// Slow the spin and turn the light reddish over time
 		lerps.push({
 			vector: die.rotation,
@@ -115,18 +120,25 @@ if (hasWebGL) {
 
 		if (!die.doneSpin && die.rotation.speed === 0) {
 			die.doneSpin = true;
+			die.doneAlign = false;
 			raycaster.setFromCamera(ORIGIN_POINT, camera);
 			const intersects = raycaster.intersectObject(die, false);
 			if (intersects.length) {
 				const intersect = intersects[0];
+				intersect.object.targetQuaternion = intersect.object.quaternion.clone().setFromUnitVectors(intersect.face.normal, CAMERA_UNIT_POS);
 				lerps.push({
 					vector: intersect.object.quaternion,
-					target: intersect.object.quaternion.clone().setFromUnitVectors(intersect.face.normal, CAMERA_UNIT_POS),
+					target: intersect.object.targetQuaternion,
 					alpha: 0.05,
 				});
 			} else {
 				console.error("No face of die facing origin!");
 			}
+		} else if (die.doneSpin && !die.doneAlign && die.quaternion.equals(die.targetQuaternion)) {
+			die.doneAlign = true;
+			const outcome = Math.floor(Math.random() * 9);
+			Array.from(document.getElementsByClassName("show")).forEach((element) => element.classList.remove("show"));
+			document.getElementById(`outcome${outcome}`).classList.add("show");
 		}
 
 		die.rotation.x += die.rotation.speed;
@@ -161,9 +173,10 @@ if (hasWebGL) {
 	render();
 
 	function updateViewportSize() {
-		camera.aspect = window.innerWidth / window.innerHeight;
+		contrect = container.getBoundingClientRect();
+		camera.aspect = contrect.width / contrect.height;
 		camera.updateProjectionMatrix();
-		renderer.setSize(window.innerWidth, window.innerHeight);
+		renderer.setSize(contrect.width, contrect.height);
 	}
 
 	function updateLerps() {
