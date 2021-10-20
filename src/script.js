@@ -9,7 +9,7 @@ try {
 } catch {}
 
 if (hasWebGL) {
-	const LERP_DONE_DISTANCE = 0.001;
+	const LERP_DONE_DISTANCE = 0.0001;
 	const SELECT_SCALE = new THREE.Vector3(1.4, 1.4, 1.4);
 	const DESELECT_SCALE = new THREE.Vector3(1, 1, 1);
 
