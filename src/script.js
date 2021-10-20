@@ -69,6 +69,8 @@ if (hasWebGL) {
 	die.doneSpin = false;
 	die.doneAlign = false;
 	die.clickFunc = function() {
+		// Hide prompt
+		document.getElementById("prompt").style.display = "none";
 		// Spin
 		die.doneSpin = false;
 		die.doneAlign = false;
