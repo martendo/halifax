@@ -1,9 +1,9 @@
 SRCS_JS = $(wildcard src/*.js) $(wildcard src/*/*.js)
 
-dist: dist/index.html dist/favicon.png dist/script.js
+dist: dist/index.html dist/favicon.png dist/script.js dist/explosion.mp3
 .PHONY: dist
 
-distmin: dist/index.html dist/favicon.png dist/script.min.js
+distmin: dist/index.html dist/favicon.png dist/script.min.js dist/explosion.mp3
 	mv dist/script.min.js dist/script.js
 .PHONY: distmin
 
@@ -28,5 +28,9 @@ dist/index.html: src/index.html
 	cp $< $(@D)
 
 dist/favicon.png: src/favicon.png
+	@mkdir -p $(@D)
+	cp $< $(@D)
+
+dist/explosion.mp3: src/explosion.mp3
 	@mkdir -p $(@D)
 	cp $< $(@D)

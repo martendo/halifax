@@ -16,6 +16,8 @@ if (hasWebGL) {
 	const ORIGIN_POINT = new THREE.Vector2(0, 0);
 	const CAMERA_UNIT_POS = new THREE.Vector3(0, 0, 3).normalize();
 
+	const explosionaudio = document.getElementById("explosionaudio");
+
 	const container = document.getElementById("container");
 	let contrect = container.getBoundingClientRect();
 
@@ -71,6 +73,8 @@ if (hasWebGL) {
 	die.clickFunc = function() {
 		// Hide prompt
 		document.getElementById("prompt").style.display = "none";
+		// Play explosion sound
+		explosionaudio.play();
 		// Spin
 		die.doneSpin = false;
 		die.doneAlign = false;
@@ -81,7 +85,7 @@ if (hasWebGL) {
 			vector: die.rotation,
 			prop: "speed",
 			target: 0,
-			alpha: 0.05,
+			alpha: 0.0395,
 		}, {
 			vector: dirLight.color,
 			target: LIGHT_FIRE_COLOR,
