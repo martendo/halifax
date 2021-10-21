@@ -8,7 +8,7 @@ distmin: dist/index.html dist/favicon.png dist/script.min.js dist/explosion.mp3
 .PHONY: distmin
 
 clean:
-	rm -rf dist
+	rm dist/script.js
 .PHONY: clean
 
 deploy: distmin
@@ -17,20 +17,7 @@ deploy: distmin
 .PHONY: deploy
 
 dist/script.js: $(SRCS_JS)
-	@mkdir -p $(@D)
 	npx rollup -f iife -o $@ src/script.js
 
 dist/script.min.js: dist/script.js
 	npx terser $< --compress --mangle -o $@
-
-dist/index.html: src/index.html
-	@mkdir -p $(@D)
-	cp $< $(@D)
-
-dist/favicon.png: src/favicon.png
-	@mkdir -p $(@D)
-	cp $< $(@D)
-
-dist/explosion.mp3: src/explosion.mp3
-	@mkdir -p $(@D)
-	cp $< $(@D)

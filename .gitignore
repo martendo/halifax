@@ -1,5 +1,5 @@
-# Built files
-/dist/
+# Built JavaScript
+/dist/script.js
 
 # Dependency files
 node_modules/
