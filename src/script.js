@@ -19,9 +19,11 @@ if (hasWebGL) {
 
 	const explosionaudio = document.getElementById("explosionaudio");
 	const audioenable = document.getElementById("audioenable");
-	audioenable.addEventListener("input", function(event) {
+	function updateAudioenable() {
 		explosionaudio.volume = audioenable.checked ? 1 : 0;
-	});
+	}
+	updateAudioenable();
+	audioenable.addEventListener("input", updateAudioenable);
 
 	const container = document.getElementById("container");
 	let contrect = container.getBoundingClientRect();
