@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
+		<meta name="viewport" content="width=device-width,height=device-height,user-scalable=no,minimum-scale=1.0,maximum-scale=1.0">
+		<title>Halifax Explosion Die</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;900&display=swap" rel="stylesheet">
+		<style>
+			* {
+				box-sizing: border-box;
+			}
+			html, body {
+				margin: 0;
+				padding: 0;
+				width: 100%;
+				height: 100%;
+				background-color: #000000;
+				font-family: "Roboto", sans-serif;
+				font-size: calc((2.5vw + 2.5vh) / 2);
+				color: #ffffff;
+				line-height: 1.5;
+			}
+			#header {
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				text-align: center;
+				pointer-events: none;
+			}
+			#prompt {
+				position: absolute;
+				top: 45%;
+				left: 10%;
+				right: 10%;
+				text-align: center;
+				pointer-events: none;
+			}
+			h1 {
+				font-size: 0.75em;
+				font-weight: 300;
+				margin-bottom: 0;
+			}
+			h2 {
+				font-size: 0.5em;
+				font-weight: 300;
+				margin: 0;
+			}
+			h3 {
+				font-size: 1.25em;
+				font-weight: 9000;
+			}
+			.outcome {
+				position: absolute;
+				top: 0;
+				left: 0;
+				display: none;
+				padding: 1.5em;
+				width: max(30%, 13em);
+				height: 100%;
+			}
+			.outcome.show {
+				display: initial;
+			}
+			#container {
+				width: 100%;
+				height: 100%;
+			}
+			audio {
+				display: none;
+			}
+			#audioenablecontainer {
+				position: absolute;
+				top: 0;
+				right: 0;
+				padding: 1em;
+				font-size: 0.75em;
+			}
+			label {
+				vertical-align: middle;
+			}
+			#explosion {
+				pointer-events: none;
+				position: fixed;
+				top: 0;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				background-color: #ffffff;
+				opacity: 1;
+				visibility: hidden;
+				transition: opacity 4s;
+			}
+		</style>
+		<link rel="icon" type="image/png" href="favicon.png" sizes="32x32">
+	</head>
+	<body>
+		<div id="header">
+			<h1>The Halifax Explosion Die of Consequence</h1>
+			<h2>By Martin Baldwin</h2>
+		</div>
+		<div id="audioenablecontainer">
+			<input type="checkbox" id="audioenable" checked>
+			<label for="audioenable">Sound</label>
+		</div>
+		<div id="prompt">You are in Halifax the morning of December 6<sup>th</sup>, 1917.<br>What's your fate?</div>
+		<div class="outcome" id="outcome0">
+			<h3>DEAD</h3>
+			<hr>
+			<p>You are buried under the rubble of collapsed buildings.</p>
+			<p>Your friends and neighbours try their best, but are unable to dig you up until it's too late.</p>
+		</div>
+		<div class="outcome" id="outcome1">
+			<h3>DEAD</h3>
+			<hr>
+			<p>Standing outside, curious of the cause of the commotion at the harbour, you are killed by the blast instantaneously.</p>
+			<p>Unfortunately, very few knew about the tremendously dangerous cargo of explosives of the SS <i>Mont-Blanc</i>. Many of the deaths and injuries that day could have been prevented had more people known of the danger.</p>
+		</div>
+		<div class="outcome" id="outcome2">
+			<h3>DEAD</h3>
+			<hr>
+			<p>You survive the initial blast, but are severely injured by rubble from your now-levelled house that had collapsed on you.</p>
+			<p>You manage to find shelter and medical treatment. However, within a few days, your condition worsens and kills you.</p>
+			<p>This was the case for hundreds of Haligonians: although they weren't killed immediately by the explosion, they had died in later weeks and months due to injuries and illnesses caused by the explosion.</p>
+		</div>
+		<div class="outcome" id="outcome3">
+			<h3>DEAD</h3>
+			<hr>
+			<p>A schoolchild, you were on your way to school when the explosion occurred, killing you along with many of your classmates and friends.</p>
+			<p>Nearly all of your family at home has also been killed, sparing only one of your brothers, who must now live without a family.</p>
+		</div>
+		<div class="outcome" id="outcome4">
+			<h3>INJURED</h3>
+			<hr>
+			<p>You survive, but are blinded by flying shards of glass from your house’s broken windows.</p>
+			<p>You have an eye removed and replaced with a glass eye, like countless other Haligonians. Some especially unlucky ones had to have both eyes removed.</p>
+			<p>In fact, so many had gotten eye injuries that the Canadian National Institute for the Blind was founded soon after as a result.</p>
+		</div>
+		<div class="outcome" id="outcome5">
+			<h3>INJURED</h3>
+			<hr>
+			<p>The blast threw you a great distance away into a place you don’t recognize, along with a severe concussion and pieces of debris in your arm.</p>
+			<p>Shrapnel injuries were an extremely common consequence of the explosion, and they were often fatal.</p>
+		</div>
+		<div class="outcome" id="outcome6">
+			<h3>ALRIGHT</h3>
+			<hr>
+			<p>You’re one of the lucky ones, untouched while off at work.</p>
+			<p>However, your wife and kids aren't as lucky, and your house has been swept away by the tsunami that ensued.</p>
+			<p>You are now homeless and without a family, and must seek shelter and food for the harsh blizzard to come tomorrow.</p>
+		</div>
+		<div class="outcome" id="outcome7">
+			<h3>ALRIGHT</h3>
+			<hr>
+			<p>On a train arriving from New Brunswick, you are saved by the incredible sacrifice of Vince Coleman.</p>
+			<p>The railway dispatcher was killed by the explosion, staying behind at his post to warn incoming trains of the danger.</p>
+			<p>Having received the warning, your train was stopped and you are left unharmed.</p>
+		</div>
+		<div class="outcome" id="outcome8">
+			<h3>ALRIGHT</h3>
+			<hr>
+			<p>Miraculously, you survive the collapse of your house without significant injury, saved by a fallen bookshelf.</p>
+			<p>Unfortunately, however, your house caught fire and was burned to the ground. You look around you and your neighbours' houses have all been burned down as well, some of your neighbours gone with them.</p>
+			<p>You must now seek shelter and food to survive the harsh blizzard to come tomorrow.</p>
+		</div>
+		<div id="container"></div>
+		<div id="explosion"></div>
+		<audio src="explosion.mp3" id="explosionaudio"></audio>
+		<script type="text/javascript" src="script.js"></script>
+	</body>
+</html>
