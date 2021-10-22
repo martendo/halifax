@@ -28,6 +28,7 @@ if (hasWebGL) {
 
 	let lerps = [];
 	let timeout = null;
+	let lastOutcome = -1;
 
 	const scene = new THREE.Scene();
 	const camera = new THREE.PerspectiveCamera(75, contrect.width / contrect.height, 0.1, 1000);
@@ -109,7 +110,12 @@ if (hasWebGL) {
 		// Show stuff when the explosion actually happens
 		timeout = setTimeout(function() {
 			die.doneAlign = true;
-			const outcome = Math.floor(Math.random() * 9);
+			// Don't give the same outcome twice in a row
+			let outcome = -1;
+			do {
+				outcome = Math.floor(Math.random() * 9);
+			} while (outcome === lastOutcome);
+			lastOutcome = outcome;
 			document.getElementById(`outcome${outcome}`).classList.add("show");
 		}, 3425);
 	};
