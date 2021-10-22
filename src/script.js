@@ -27,6 +27,7 @@ if (hasWebGL) {
 	let contrect = container.getBoundingClientRect();
 
 	let lerps = [];
+	let timeout = null;
 
 	const scene = new THREE.Scene();
 	const camera = new THREE.PerspectiveCamera(75, contrect.width / contrect.height, 0.1, 1000);
@@ -78,6 +79,12 @@ if (hasWebGL) {
 	die.clickFunc = function() {
 		// Hide prompt
 		document.getElementById("prompt").style.display = "none";
+		// Hide previous outcome
+		Array.from(document.getElementsByClassName("show")).forEach((element) => element.classList.remove("show"));
+		// Clear previous timeout
+		if (timeout != null) {
+			clearTimeout(timeout);
+		}
 		// Play explosion sound
 		explosionaudio.currentTime = 0;
 		explosionaudio.play();
@@ -99,6 +106,12 @@ if (hasWebGL) {
 			target: LIGHT_FIRE_COLOR,
 			alpha: 0.01,
 		});
+		// Show stuff when the explosion actually happens
+		timeout = setTimeout(function() {
+			die.doneAlign = true;
+			const outcome = Math.floor(Math.random() * 9);
+			document.getElementById(`outcome${outcome}`).classList.add("show");
+		}, 3425);
 	};
 	scene.add(die);
 	const edges = new THREE.EdgesGeometry(geometry);
@@ -148,11 +161,6 @@ if (hasWebGL) {
 			} else {
 				console.error("No face of die facing origin!");
 			}
-		} else if (die.doneSpin && !die.doneAlign && die.quaternion.equals(die.targetQuaternion)) {
-			die.doneAlign = true;
-			const outcome = Math.floor(Math.random() * 9);
-			Array.from(document.getElementsByClassName("show")).forEach((element) => element.classList.remove("show"));
-			document.getElementById(`outcome${outcome}`).classList.add("show");
 		}
 
 		die.rotation.x += die.rotation.speed;
