@@ -12,6 +12,7 @@ if (hasWebGL) {
 	const LERP_DONE_DISTANCE = 0.0005;
 	const SELECT_SCALE = new THREE.Vector3(1.4, 1.4, 1.4);
 	const DESELECT_SCALE = new THREE.Vector3(1, 1, 1);
+	const LIGHT_COLOR_HEX = 0xffff0e0;
 	const LIGHT_FIRE_COLOR = new THREE.Color(0xff0000);
 	const ORIGIN_POINT = new THREE.Vector2(0, 0);
 	const CAMERA_UNIT_POS = new THREE.Vector3(0, 0, 3).normalize();
@@ -74,7 +75,10 @@ if (hasWebGL) {
 		// Hide prompt
 		document.getElementById("prompt").style.display = "none";
 		// Play explosion sound
+		explosionaudio.currentTime = 0;
 		explosionaudio.play();
+		// Reset light colour
+		dirLight.color.setHex(LIGHT_COLOR_HEX);
 		// Spin
 		die.doneSpin = false;
 		die.doneAlign = false;
@@ -99,7 +103,7 @@ if (hasWebGL) {
 	die.add(line);
 
 	const hemiLight = new THREE.HemisphereLight(0xfffff0, 0x606060, 0.5);
-	const dirLight = new THREE.DirectionalLight(0xffff0e0, 0.5);
+	const dirLight = new THREE.DirectionalLight(LIGHT_COLOR_HEX, 0.5);
 	dirLight.position.set(1, 1, 2);
 	scene.add(hemiLight, dirLight);
 
