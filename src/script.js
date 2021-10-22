@@ -114,10 +114,6 @@ if (hasWebGL) {
 		}, 3425);
 	};
 	scene.add(die);
-	const edges = new THREE.EdgesGeometry(geometry);
-	const line = new THREE.LineSegments(edges);
-	line.material.color.setHex(0x000000);
-	die.add(line);
 
 	const hemiLight = new THREE.HemisphereLight(0xfffff0, 0x606060, 0.5);
 	const dirLight = new THREE.DirectionalLight(LIGHT_COLOR_HEX, 0.5);
