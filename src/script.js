@@ -147,9 +147,10 @@ if (hasWebGL) {
 	const raycaster = new THREE.Raycaster();
 	const pointer = new THREE.Vector2(10, 10);
 	window.addEventListener("mousemove", function(event) {
+		const rect = renderer.domElement.getBoundingClientRect();
 		// Convert coordinates to [-1.0, 1.0]
-		pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-		pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+		pointer.x = ((event.clientX - rect.x) / window.innerWidth) * 2 - 1;
+		pointer.y = -((event.clientY - rect.y) / window.innerHeight) * 2 + 1;
 	});
 	let intObj = null;
 	renderer.domElement.addEventListener("click", function(event) {
