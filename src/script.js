@@ -100,7 +100,7 @@ if (hasWebGL) {
 		die.doneSpin = false;
 		die.doneAlign = false;
 		die.rotation.speed = Math.random() * (0.5 - 0.25) + 0.25;
-		lerps = lerps.filter((lerp) => lerp.vector !== die.rotation.speed && lerp.vector !== dirLight.color && lerp.vector !== die.quaternion);
+		lerps = lerps.filter((lerp) => lerp.vector !== die.rotation && lerp.vector !== dirLight.color && lerp.vector !== die.quaternion);
 		// Slow the spin and turn the light reddish over time
 		lerps.push({
 			vector: die.rotation,
