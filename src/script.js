@@ -18,6 +18,10 @@ if (hasWebGL) {
 	const CAMERA_UNIT_POS = new THREE.Vector3(0, 0, 3).normalize();
 
 	const explosionaudio = document.getElementById("explosionaudio");
+	const audioenable = document.getElementById("audioenable");
+	audioenable.addEventListener("input", function(event) {
+		explosionaudio.volume = audioenable.checked ? 1 : 0;
+	});
 
 	const container = document.getElementById("container");
 	let contrect = container.getBoundingClientRect();

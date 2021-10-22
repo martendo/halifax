@@ -70,6 +70,13 @@
 			audio {
 				display: none;
 			}
+			#audioenablecontainer {
+				position: absolute;
+				top: 0;
+				right: 0;
+				padding: 1em;
+				font-size: 0.5em;
+			}
 		</style>
 		<link rel="icon" type="image/png" href="favicon.png" sizes="32x32">
 	</head>
@@ -77,6 +84,10 @@
 		<div id="header">
 			<h1>The Halifax Explosion Die of Consequence</h1>
 			<h2>By Martin Baldwin</h2>
+		</div>
+		<div id="audioenablecontainer">
+			<input type="checkbox" id="audioenable" checked>
+			<label for="audioenable">Sound</label>
 		</div>
 		<div id="prompt">You are in Halifax the morning of December 6<sup>th</sup>, 1917.<br>What's your fate?</div>
 		<div class="outcome" id="outcome0">
