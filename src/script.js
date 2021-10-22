@@ -20,7 +20,7 @@ if (hasWebGL) {
 	const explosionaudio = document.getElementById("explosionaudio");
 	const audioenable = document.getElementById("audioenable");
 	function updateAudioenable() {
-		explosionaudio.volume = audioenable.checked ? 1 : 0;
+		explosionaudio.muted = !audioenable.checked;
 	}
 	updateAudioenable();
 	audioenable.addEventListener("input", updateAudioenable);
