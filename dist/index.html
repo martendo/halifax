@@ -84,6 +84,18 @@
 			label {
 				vertical-align: middle;
 			}
+			#explosion {
+				pointer-events: none;
+				position: absolute;
+				top: 0;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				background-color: #ffffff;
+				opacity: 1;
+				visibility: hidden;
+				transition: opacity 4s;
+			}
 		</style>
 		<link rel="icon" type="image/png" href="favicon.png" sizes="32x32">
 	</head>
@@ -157,6 +169,7 @@
 			<p>You must now seek shelter and food to survive the harsh blizzard to come tomorrow.</p>
 		</div>
 		<div id="container"></div>
+		<div id="explosion"></div>
 		<audio src="explosion.mp3" id="explosionaudio"></audio>
 		<script type="text/javascript" src="script.js"></script>
 	</body>

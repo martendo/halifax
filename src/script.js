@@ -25,11 +25,13 @@ if (hasWebGL) {
 	updateAudioenable();
 	audioenable.addEventListener("input", updateAudioenable);
 
+	const explosion = document.getElementById("explosion");
+
 	const container = document.getElementById("container");
 	let contrect = container.getBoundingClientRect();
 
 	let lerps = [];
-	let timeout = null;
+	let timeouts = [];
 	let lastOutcome = -1;
 
 	const scene = new THREE.Scene();
@@ -85,9 +87,10 @@ if (hasWebGL) {
 		// Hide previous outcome
 		Array.from(document.getElementsByClassName("show")).forEach((element) => element.classList.remove("show"));
 		// Clear previous timeout
-		if (timeout != null) {
+		for (const timeout of timeouts) {
 			clearTimeout(timeout);
 		}
+		timeouts = [];
 		// Play explosion sound
 		explosionaudio.currentTime = 0;
 		explosionaudio.play();
@@ -103,14 +106,14 @@ if (hasWebGL) {
 			vector: die.rotation,
 			prop: "speed",
 			target: 0,
-			alpha: 0.0395,
+			alpha: 0.04,
 		}, {
 			vector: dirLight.color,
 			target: LIGHT_FIRE_COLOR,
 			alpha: 0.01,
 		});
 		// Show stuff when the explosion actually happens
-		timeout = setTimeout(function() {
+		timeouts.push(setTimeout(function() {
 			die.doneAlign = true;
 			// Don't give the same outcome twice in a row
 			let outcome = -1;
@@ -119,7 +122,13 @@ if (hasWebGL) {
 			} while (outcome === lastOutcome);
 			lastOutcome = outcome;
 			document.getElementById(`outcome${outcome}`).classList.add("show");
-		}, 3425);
+			explosion.style.visibility = "visible";
+		}, 3425), setTimeout(function() {
+			explosion.style.opacity = 0;
+		}, 3425 + 1000), setTimeout(function() {
+			explosion.style.visibility = "";
+			explosion.style.opacity = "";
+		}, 3425 + 4000));
 	};
 	scene.add(die);
 
