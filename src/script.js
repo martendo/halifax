@@ -126,12 +126,12 @@ if (hasWebGL) {
 			lastOutcome = outcome;
 			document.getElementById(`outcome${outcome}`).classList.add("show");
 			explosion.style.visibility = "visible";
-		}, 3425), setTimeout(function() {
+		}, 3475), setTimeout(function() {
 			explosion.style.opacity = 0;
-		}, 3425 + 1000), setTimeout(function() {
+		}, 3475 + 1000), setTimeout(function() {
 			explosion.style.visibility = "";
 			explosion.style.opacity = "";
-		}, 3425 + 4000));
+		}, 3475 + 4000));
 	};
 	scene.add(die);
 
