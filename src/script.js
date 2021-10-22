@@ -86,6 +86,9 @@ if (hasWebGL) {
 		document.getElementById("prompt").style.display = "none";
 		// Hide previous outcome
 		Array.from(document.getElementsByClassName("show")).forEach((element) => element.classList.remove("show"));
+		// Reset explosion flash
+		explosion.style.visibility = "";
+		explosion.style.opacity = "";
 		// Clear previous timeout
 		for (const timeout of timeouts) {
 			clearTimeout(timeout);
